@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Imágenes - Future Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .test-image {
+            width: 70px;
+            height: 98px;
+            object-fit: contain;
+            border: 1px solid #666;
+            border-radius: 4px;
+        }
+        .error {
+            border-color: red !important;
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+        .success {
+            border-color: green !important;
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        .ui-test {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .ui-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test de Carga de Imágenes - Future Cards</h1>
+    
+    <div class="test-section">
+        <h2>Imágenes de UI</h2>
+        <div class="ui-test">
+            <div>
+                <p>Home.png:</p>
+                <img src="img/Home.png" alt="Home" class="ui-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            </div>
+            <div>
+                <p>Board.png:</p>
+                <img src="img/Board.png" alt="Board" class="ui-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            </div>
+            <div>
+                <p>PlayBtm.png:</p>
+                <img src="img/PlayBtm.png" alt="Play" class="ui-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            </div>
+            <div>
+                <p>Exit.png:</p>
+                <img src="img/Exit.png" alt="Exit" class="ui-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            </div>
+            <div>
+                <p>Settings Btm.png:</p>
+                <img src="img/Settings Btm.png" alt="Settings" class="ui-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Cartas de Ejemplo</h2>
+        <div class="image-grid">
+            <img src="img/cards/Backcard.png" alt="Backcard" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/A-C.png" alt="As de Tréboles" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/K-H.png" alt="Rey de Corazones" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/Q-D.png" alt="Reina de Diamantes" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/J-S.png" alt="Jota de Picas" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/10-C.png" alt="10 de Tréboles" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/5-H.png" alt="5 de Corazones" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+            <img src="img/cards/2-D.png" alt="2 de Diamantes" class="test-image" onload="this.classList.add('success')" onerror="this.classList.add('error')">
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Información del Sistema</h2>
+        <p>Ruta actual: <span id="current-path"></span></p>
+        <p>User Agent: <span id="user-agent"></span></p>
+    </div>
+    
+    <script>
+        document.getElementById('current-path').textContent = window.location.href;
+        document.getElementById('user-agent').textContent = navigator.userAgent;
+        
+        // Contador de imágenes cargadas
+        let loaded = 0;
+        let errors = 0;
+        
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', () => {
+                loaded++;
+                console.log(`✅ Imagen cargada: ${img.src}`);
+                updateCounter();
+            });
+            
+            img.addEventListener('error', () => {
+                errors++;
+                console.error(`❌ Error cargando imagen: ${img.src}`);
+                updateCounter();
+            });
+        });
+        
+        function updateCounter() {
+            document.title = `Test Imágenes - Cargadas: ${loaded}, Errores: ${errors}`;
+        }
+    </script>
+</body>
+</html>

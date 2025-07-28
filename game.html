@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Cards - Tablero de Juego</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('img/Board.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            color: white;
+            overflow-x: auto;
+        }
+
+        .game-container {
+            padding: 23px; /* 20px * 1.15 = 23px */
+            max-width: 1380px; /* 1200px * 1.15 = 1380px */
+            margin: 0 auto;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 35px; /* 30px * 1.15 = 34.5px ≈ 35px */
+            background: rgba(0, 0, 0, 0.3);
+            padding: 23px; /* 20px * 1.15 = 23px */
+            border-radius: 17px; /* 15px * 1.15 = 17.25px ≈ 17px */
+            backdrop-filter: blur(5px);
+        }
+
+        .game-title {
+            font-size: 2.9rem; /* 2.5rem * 1.15 = 2.875rem ≈ 2.9rem */
+            color: #ffed4e;
+            text-shadow: 0 0 20px rgba(255, 237, 78, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 23px; /* 20px * 1.15 = 23px */
+            margin-bottom: 23px; /* 20px * 1.15 = 23px */
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px; /* 12px*1.15=13.8px≈14px, 24px*1.15=27.6px≈28px */
+            font-size: 18px; /* 16px * 1.15 = 18.4px ≈ 18px */
+            font-weight: bold;
+            border: none;
+            border-radius: 9px; /* 8px * 1.15 = 9.2px ≈ 9px */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #1976D2, #2196F3);
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #d32f2f, #f44336);
+            transform: scale(1.05);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #f57c00, #ff9800);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn.hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .game-info {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .board-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 17px; /* 15px * 1.15 = 17.25px ≈ 17px */
+            max-width: 920px; /* 800px * 1.15 = 920px */
+            margin: 0 auto;
+            padding: 23px; /* 20px * 1.15 = 23px */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 17px; /* 15px * 1.15 = 17.25px ≈ 17px */
+            border: 2px solid rgba(255, 237, 78, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .card-position {
+            position: relative;
+            min-height: 184px; /* 160px * 1.15 = 184px */
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px; /* 12px * 1.15 = 13.8px ≈ 14px */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .card-position:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 237, 78, 0.7);
+            box-shadow: 0 0 15px rgba(255, 237, 78, 0.3);
+        }
+
+        .position-label {
+            position: absolute;
+            top: 9px; /* 8px * 1.15 = 9.2px ≈ 9px */
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 21px; /* 18px * 1.15 = 20.7px ≈ 21px */
+            color: #ffed4e;
+            text-shadow: 0 0 10px rgba(255, 237, 78, 0.5);
+        }
+
+        .position-piles {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .local-pile {
+            width: 58px; /* 50px * 1.15 = 57.5px ≈ 58px */
+            height: 81px; /* 70px * 1.15 = 80.5px ≈ 81px */
+            border-radius: 7px; /* 6px * 1.15 = 6.9px ≈ 7px */
+            position: relative;
+            cursor: pointer;
+        }
+
+        .face-down-local {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: 2px solid #FF8C00;
+        }
+
+        .face-up-local {
+            background: linear-gradient(135deg, #32CD32, #228B22);
+            border: 2px solid #006400;
+        }
+
+        .local-pile-stack {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+            width: 53px; /* 46px * 1.15 = 52.9px ≈ 53px */
+            height: 76px; /* 66px * 1.15 = 75.9px ≈ 76px */
+            border-radius: 5px; /* 4px * 1.15 = 4.6px ≈ 5px */
+            border: 1px solid #333;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card.face-down {
+            background-image: url('img/cards/Backcard.png');
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .card.revealed {
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+            animation: revealGlow 0.5s ease-in-out;
+        }
+
+        @keyframes revealGlow {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
+        }
+
+        .card.revealed:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+        }
+
+        .card.flipping {
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card.dragging {
+            opacity: 0.5;
+            transform: scale(1.1);
+            z-index: 1000;
+        }
+
+        .card-position.drag-over {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .local-pile.drag-over {
+            background: rgba(76, 175, 80, 0.5);
+            transform: scale(1.05);
+        }
+
+        .card-position.highlight-correct {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #FFD700;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+            animation: highlightPulse 2s infinite;
+        }
+
+        @keyframes highlightPulse {
+            0% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 35px rgba(255, 215, 0, 0.9); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+        }
+
+        .position-active {
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        }
+
+        .pile-counter {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 23px; /* 20px * 1.15 = 23px */
+            height: 23px; /* 20px * 1.15 = 23px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px; /* 12px * 1.15 = 13.8px ≈ 14px */
+            font-weight: bold;
+        }
+
+        .pile-counter.empty {
+            display: none;
+        }
+
+        /* Grid positioning for specific cards */
+        .row-1.col-1 { grid-column: 1; grid-row: 1; } /* A */
+        .row-1.col-2 { grid-column: 2; grid-row: 1; } /* 2 */
+        .row-1.col-3 { grid-column: 3; grid-row: 1; } /* 3 */
+        .row-1.col-4 { grid-column: 4; grid-row: 1; } /* 4 */
+
+        .row-2.col-1 { grid-column: 1; grid-row: 2; } /* 5 */
+        .row-2.col-4 { grid-column: 4; grid-row: 2; } /* 6 */
+
+        .row-3.col-1 { grid-column: 1; grid-row: 3; } /* 7 */
+        .row-3.col-4 { grid-column: 4; grid-row: 3; } /* 8 */
+
+        .row-4.col-1 { grid-column: 1; grid-row: 4; } /* 9 */
+        .row-4.col-2 { grid-column: 2; grid-row: 4; } /* 10 */
+        .row-4.col-3 { grid-column: 3; grid-row: 4; } /* J */
+        .row-4.col-4 { grid-column: 4; grid-row: 4; } /* Q */
+
+        /* Center K position */
+        .center-k {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 138px; /* 120px * 1.15 = 138px */
+            height: 138px; /* 120px * 1.15 = 138px */
+            z-index: 5;
+        }
+
+        .center-k:hover {
+            background: rgba(255, 215, 0, 0.25) !important;
+            border-color: #ffed4e !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+
+        .help-panel {
+            margin-top: 35px; /* 30px * 1.15 = 34.5px ≈ 35px */
+            background: rgba(0, 0, 0, 0.4);
+            padding: 23px; /* 20px * 1.15 = 23px */
+            border-radius: 12px; /* 10px * 1.15 = 11.5px ≈ 12px */
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 237, 78, 0.3);
+        }
+
+        .help-item {
+            margin: 6px 0; /* 5px * 1.15 = 5.75px ≈ 6px */
+            font-size: 16px; /* 14px * 1.15 = 16.1px ≈ 16px */
+        }
+
+        .win-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 35px; /* 30px * 1.15 = 34.5px ≈ 35px */
+            border-radius: 17px; /* 15px * 1.15 = 17.25px ≈ 17px */
+            text-align: center;
+            font-size: 28px; /* 24px * 1.15 = 27.6px ≈ 28px */
+            font-weight: bold;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .board-container {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(6, 1fr);
+                gap: 12px; /* 10px * 1.15 = 11.5px ≈ 12px */
+                padding: 17px; /* 15px * 1.15 = 17.25px ≈ 17px */
+            }
+            
+            .card-position {
+                min-height: 138px; /* 120px * 1.15 = 138px */
+            }
+            
+            .local-pile {
+                width: 40px;
+                height: 56px;
+            }
+            
+            .card {
+                width: 36px;
+                height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🃏 Future Cards</h1>
+        </div>
+
+        <div class="game-controls">
+            <button id="start-game-btn" class="btn btn-primary">🎮 Iniciar Juego</button>
+            <button id="reset-game-btn" class="btn btn-danger hidden">🔄 Reiniciar</button>
+            <button id="auto-mode-btn" class="btn btn-warning hidden">🤖 Modo Automático</button>
+            <a href="index.html" class="btn btn-secondary">🏠 Volver al Inicio</a>
+        </div>
+
+        <div class="game-info">
+            <div class="info-item">
+                <span id="cards-remaining">Cartas por revelar: 0</span>
+            </div>
+            <div class="info-item">
+                Estado: <span id="game-status">Presiona "Iniciar Juego"</span>
+            </div>
+        </div>
+
+        <div class="board-container">
+            <!-- Fila Superior: A, 2, 3, 4 -->
+            <div class="card-position row-1 col-1" data-position="A">
+                <div class="position-label">A</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-1 col-2" data-position="2">
+                <div class="position-label">2</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-1 col-3" data-position="3">
+                <div class="position-label">3</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-1 col-4" data-position="4">
+                <div class="position-label">4</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila Izquierda y Derecha: 5, 6 -->
+            <div class="card-position row-2 col-1" data-position="5">
+                <div class="position-label">5</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-2 col-4" data-position="6">
+                <div class="position-label">6</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 3: 7, 8 -->
+            <div class="card-position row-3 col-1" data-position="7">
+                <div class="position-label">7</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-3 col-4" data-position="8">
+                <div class="position-label">8</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila Inferior: 9, 10, J, Q -->
+            <div class="card-position row-4 col-1" data-position="9">
+                <div class="position-label">9</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-4 col-2" data-position="10">
+                <div class="position-label">10</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-4 col-3" data-position="J">
+                <div class="position-label">J</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-4 col-4" data-position="Q">
+                <div class="position-label">Q</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centro: K -->
+            <div class="card-position center-k" data-position="K">
+                <div class="position-label">K</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-panel">
+            <h3>🎮 Reglas del Juego</h3>
+            <div class="help-item"><strong>Inicio:</strong> El juego siempre comienza en la posición K</div>
+            <div class="help-item"><strong>Turnos:</strong> Solo puedes voltear cartas en la posición resaltada en verde</div>
+            <div class="help-item"><strong>Secuencia:</strong> Voltea carta → Colócala en su posición correcta → Continúa en esa posición</div>
+            <div class="help-item"><strong>Ejemplo:</strong> Si volteas un 2 en K, debes colocarlo en posición 2, luego voltear en posición 2</div>
+            <div class="help-item"><strong>Objetivo:</strong> Organizar todas las cartas siguiendo la secuencia de turnos</div>
+            <div class="help-item"><strong>Pilas:</strong> 🟡 Boca abajo | 🟢 Boca arriba (zona de drop)</div>
+        </div>
+    </div>
+
+    <div id="win-message" class="win-message">
+        🎉 ¡Felicitaciones! Has completado el juego 🎉
+    </div>
+
+    <script>
+        class FutureCardsGame {
+            constructor() {
+                this.deck = [];
+                this.positions = {};
+                this.gameStarted = false;
+                this.cardsRemaining = 52;
+                this.turnState = {
+                    canFlipCard: true,
+                    lastFlippedCard: null,
+                    currentActivePosition: 'K', // Siempre inicia en K
+                    mustPlaceCard: false, // Indica si hay una carta que debe colocarse antes de continuar
+                    cardToPlace: null // Carta que debe colocarse
+                };
+                
+                // Variables para modo automático
+                this.autoModeActive = false;
+                this.autoModeSpeed = 1000; // milisegundos entre movimientos
+                this.gameWon = false;
+                
+                this.initializeGame();
+                this.setupEventListeners();
+            }
+
+            // Crear baraja completa de 52 cartas
+            createDeck() {
+                const suits = ['C', 'D', 'H', 'S']; // Clubs, Diamonds, Hearts, Spades
+                const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+                
+                this.deck = [];
+                suits.forEach(suit => {
+                    values.forEach(value => {
+                        this.deck.push({
+                            suit: suit,
+                            value: value,
+                            filename: `${value}-${suit}.png`,
+                            faceUp: false
+                        });
+                    });
+                });
+                
+                console.log('🎴 Baraja creada con', this.deck.length, 'cartas');
+            }
+
+            // Barajar cartas
+            shuffleDeck() {
+                for (let i = this.deck.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+                }
+                console.log('🔀 Baraja barajada');
+            }
+
+            // Inicializar posiciones del tablero
+            initializePositions() {
+                const positionElements = document.querySelectorAll('.card-position');
+                
+                positionElements.forEach(element => {
+                    const position = element.dataset.position;
+                    this.positions[position] = {
+                        element: element,
+                        faceDownPile: {
+                            element: element.querySelector('.face-down-local'),
+                            cards: []
+                        },
+                        faceUpPile: {
+                            element: element.querySelector('.face-up-local'),
+                            cards: []
+                        }
+                    };
+                    
+                    // Configurar drop zones
+                    this.setupDropZone(element);
+                });
+                
+                console.log('🎯 Posiciones inicializadas:', Object.keys(this.positions));
+            }
+
+            // Configurar zona de drop para las posiciones
+            setupDropZone(positionElement) {
+                const faceUpPile = positionElement.querySelector('.face-up-local');
+                
+                // Drop en la pila boca arriba
+                faceUpPile.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    faceUpPile.classList.add('drag-over');
+                });
+                
+                faceUpPile.addEventListener('dragleave', () => {
+                    faceUpPile.classList.remove('drag-over');
+                });
+                
+                faceUpPile.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    faceUpPile.classList.remove('drag-over');
+                    
+                    try {
+                        const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                        const targetPosition = positionElement.dataset.position;
+                        
+                        console.log('🎯 Drop detectado:', dragData.cardData.value, 'en posición', targetPosition);
+                        
+                        // Verificar si la carta pertenece a esta posición
+                        if (dragData.cardData.value === targetPosition) {
+                            this.handleCorrectDrop(dragData, targetPosition);
+                        } else {
+                            console.log('❌ Carta incorrecta para esta posición');
+                            this.handleIncorrectDrop(dragData, targetPosition);
+                        }
+                    } catch (error) {
+                        console.error('Error procesando drop:', error);
+                    }
+                });
+                
+                // También permitir drop en toda la posición
+                positionElement.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    positionElement.classList.add('drag-over');
+                });
+                
+                positionElement.addEventListener('dragleave', (e) => {
+                    if (!positionElement.contains(e.relatedTarget)) {
+                        positionElement.classList.remove('drag-over');
+                    }
+                });
+                
+                positionElement.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    positionElement.classList.remove('drag-over');
+                    
+                    // Solo procesar si no fue manejado por la pila específica
+                    if (!e.target.classList.contains('face-up-local')) {
+                        try {
+                            const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                            const targetPosition = positionElement.dataset.position;
+                            
+                            // Mover a pila boca abajo de la nueva posición
+                            this.handlePositionChange(dragData, targetPosition);
+                        } catch (error) {
+                            console.error('Error procesando drop en posición:', error);
+                        }
+                    }
+                });
+            }
+
+            // Distribuir cartas a las posiciones
+            dealCards() {
+                this.createDeck();
+                this.shuffleDeck();
+                
+                const positionKeys = Object.keys(this.positions);
+                let cardIndex = 0;
+                
+                // Distribuir 4 cartas por posición en la pila boca abajo
+                for (let round = 0; round < 4; round++) {
+                    for (const positionKey of positionKeys) {
+                        if (cardIndex < this.deck.length) {
+                            const card = this.deck[cardIndex];
+                            this.addCardToLocalPile(positionKey, card, 'faceDown', round);
+                            cardIndex++;
+                        }
+                    }
+                }
+                
+                this.updateCardsRemaining();
+                console.log('🎯 Cartas distribuidas en el tablero');
+            }
+
+            // Agregar carta a una pila local específica
+            addCardToLocalPile(positionKey, card, pileType, stackIndex = null) {
+                const position = this.positions[positionKey];
+                if (!position) return;
+                
+                const pile = pileType === 'faceDown' ? position.faceDownPile : position.faceUpPile;
+                
+                // Crear elemento de carta
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.cardId = `${card.value}-${card.suit}`;
+                
+                if (pileType === 'faceDown') {
+                    cardElement.classList.add('face-down');
+                } else {
+                    cardElement.style.backgroundImage = `url('img/cards/${card.filename}')`;
+                    card.faceUp = true;
+                }
+                
+                // Posicionar carta en stack
+                const zIndex = pile.cards.length;
+                const offsetY = zIndex * 2;
+                cardElement.style.zIndex = zIndex + 1;
+                cardElement.style.top = `${offsetY}px`;
+                
+                // Agregar al DOM y arrays
+                pile.element.querySelector('.local-pile-stack').appendChild(cardElement);
+                pile.cards.push({ element: cardElement, data: card });
+                
+                // Event listeners
+                this.setupLocalCardEventListeners(cardElement, card, positionKey, pileType);
+                
+                // Actualizar contador
+                this.updateLocalPileCounters(positionKey);
+            }
+
+            // Event listeners para cartas en pilas locales
+            setupLocalCardEventListeners(cardElement, card, positionKey, pileType) {
+                // Click para voltear carta (solo si está boca abajo y es la posición activa)
+                cardElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (this.gameStarted && pileType === 'faceDown' && this.canFlipCardInPosition(positionKey)) {
+                        this.flipLocalCardInPlace(cardElement, card, positionKey);
+                    } else if (this.gameStarted && pileType === 'faceDown') {
+                        // Mostrar mensaje de por qué no se puede voltear
+                        const reason = this.getFlipRestrictionReason(positionKey);
+                        this.showMessage(reason);
+                    }
+                });
+                
+                // Doble click para mover a la posición correcta
+                cardElement.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    if (this.gameStarted && pileType === 'faceDown' && !cardElement.classList.contains('face-down')) {
+                        this.moveCardToCorrectPosition(cardElement, card, positionKey);
+                    }
+                });
+                
+                // Drag and drop para cartas reveladas
+                if (pileType === 'faceDown') {
+                    cardElement.addEventListener('dragstart', (e) => {
+                        if (!cardElement.classList.contains('face-down') && cardElement.classList.contains('revealed')) {
+                            e.dataTransfer.setData('text/plain', JSON.stringify({
+                                cardId: cardElement.dataset.cardId,
+                                sourcePosition: positionKey,
+                                sourcePile: pileType,
+                                cardData: card
+                            }));
+                            cardElement.classList.add('dragging');
+                            console.log('🎯 Iniciando arrastre de carta:', card.value, 'de', card.suit);
+                        } else {
+                            e.preventDefault();
+                        }
+                    });
+                    
+                    cardElement.addEventListener('dragend', () => {
+                        cardElement.classList.remove('dragging');
+                    });
+                }
+                
+                cardElement.draggable = true;
+            }
+
+            // Voltear carta en su lugar (sin moverla automáticamente)
+            flipLocalCardInPlace(cardElement, card, positionKey) {
+                if (!this.canFlipCardInPosition(positionKey)) return;
+                
+                console.log('🔄 Volteando carta en su lugar:', card.value, 'de', card.suit, 'en posición', positionKey);
+                
+                // Bloquear más volteos hasta que se coloque esta carta
+                this.turnState.canFlipCard = false;
+                this.turnState.lastFlippedCard = cardElement;
+                this.turnState.mustPlaceCard = true;
+                this.turnState.cardToPlace = card;
+                
+                // Animación de volteo
+                cardElement.classList.add('flipping');
+                
+                setTimeout(() => {
+                    // Cambiar imagen a la carta real
+                    cardElement.classList.remove('face-down', 'flipping');
+                    cardElement.style.backgroundImage = `url('img/cards/${card.filename}')`;
+                    card.faceUp = true;
+                    
+                    // Agregar clase para indicar que está volteada
+                    cardElement.classList.add('revealed');
+                    
+                    // Mostrar mensaje de instrucción
+                    this.showMessage(`Carta ${card.value} revelada. Colócala en su posición correcta para continuar.`);
+                    
+                    // Resaltar posición correcta
+                    this.highlightCorrectPosition(card.value);
+                    
+                }, 300);
+            }
+
+            // Verificar si se puede voltear una carta en una posición específica
+            canFlipCardInPosition(positionKey) {
+                // Si hay una carta que debe colocarse primero, no se puede voltear nada más
+                if (this.turnState.mustPlaceCard) {
+                    return false;
+                }
+                
+                // Solo se puede voltear en la posición activa actual
+                return positionKey === this.turnState.currentActivePosition;
+            }
+
+            // Obtener razón por la cual no se puede voltear una carta
+            getFlipRestrictionReason(positionKey) {
+                if (this.turnState.mustPlaceCard) {
+                    return `Debes colocar la carta ${this.turnState.cardToPlace.value} en su posición correcta antes de continuar`;
+                }
+                
+                if (positionKey !== this.turnState.currentActivePosition) {
+                    return `Solo puedes voltear cartas en la posición ${this.turnState.currentActivePosition} en este momento`;
+                }
+                
+                return "No se puede voltear esta carta en este momento";
+            }
+
+            // Resaltar la posición correcta para una carta
+            highlightCorrectPosition(cardValue) {
+                // Remover highlights anteriores
+                document.querySelectorAll('.card-position').forEach(pos => {
+                    pos.classList.remove('highlight-correct');
+                });
+                
+                // Resaltar la posición correcta
+                const correctPosition = document.querySelector(`[data-position="${cardValue}"]`);
+                if (correctPosition) {
+                    correctPosition.classList.add('highlight-correct');
+                }
+            }
+
+            // Mover carta a su posición correcta
+            moveCardToCorrectPosition(cardElement, card, currentPosition) {
+                const correctPosition = card.value;
+                
+                if (currentPosition === correctPosition) {
+                    // Ya está en la posición correcta, mover a pila boca arriba
+                    this.moveCardToFaceUpPile(cardElement, card, currentPosition);
+                } else {
+                    // Verificar si la posición correcta existe
+                    if (this.positions[correctPosition]) {
+                        this.moveCardBetweenPositions(cardElement, card, currentPosition, correctPosition);
+                    } else {
+                        console.log('❌ Posición no válida:', correctPosition);
+                        alert(`No existe una posición para la carta ${card.value}`);
+                    }
+                }
+            }
+
+            // Mover carta a la pila boca arriba de su posición
+            moveCardToFaceUpPile(cardElement, card, positionKey) {
+                const position = this.positions[positionKey];
+                
+                // Remover de pila boca abajo
+                const faceDownIndex = position.faceDownPile.cards.findIndex(c => c.element === cardElement);
+                if (faceDownIndex !== -1) {
+                    position.faceDownPile.cards.splice(faceDownIndex, 1);
+                    cardElement.remove();
+                    
+                    // Agregar a pila boca arriba
+                    this.addCardToLocalPile(positionKey, card, 'faceUp');
+                    
+                    console.log('✅ Carta movida a pila boca arriba en posición', positionKey);
+                    this.updateCardsRemaining();
+                    this.checkWinCondition();
+                }
+            }
+
+            // Mover carta entre posiciones diferentes
+            moveCardBetweenPositions(cardElement, card, sourcePos, targetPos) {
+                const sourcePosition = this.positions[sourcePos];
+                const targetPosition = this.positions[targetPos];
+                
+                // Remover de posición origen
+                const faceDownIndex = sourcePosition.faceDownPile.cards.findIndex(c => c.element === cardElement);
+                if (faceDownIndex !== -1) {
+                    sourcePosition.faceDownPile.cards.splice(faceDownIndex, 1);
+                    cardElement.remove();
+                    
+                    // Agregar a pila boca abajo de la posición destino
+                    card.faceUp = false; // Reset para que aparezca boca abajo en la nueva posición
+                    this.addCardToLocalPile(targetPos, card, 'faceDown');
+                    
+                    this.updateLocalPileCounters(sourcePos);
+                    this.updateLocalPileCounters(targetPos);
+                    
+                    console.log(`🔄 Carta ${card.value} movida de posición ${sourcePos} a ${targetPos}`);
+                }
+            }
+
+            // Manejar drop correcto (carta en su posición correcta)
+            handleCorrectDrop(dragData, targetPosition) {
+                const sourcePosition = this.positions[dragData.sourcePosition];
+                
+                // Encontrar y remover la carta de la posición origen
+                const cardIndex = sourcePosition.faceDownPile.cards.findIndex(c => 
+                    c.data.value === dragData.cardData.value && c.data.suit === dragData.cardData.suit
+                );
+                
+                if (cardIndex !== -1) {
+                    const cardObj = sourcePosition.faceDownPile.cards[cardIndex];
+                    sourcePosition.faceDownPile.cards.splice(cardIndex, 1);
+                    cardObj.element.remove();
+                    
+                    // Agregar a pila boca arriba de la posición correcta
+                    this.addCardToLocalPile(targetPosition, dragData.cardData, 'faceUp');
+                    
+                    // Actualizar contadores
+                    this.updateLocalPileCounters(dragData.sourcePosition);
+                    this.updateLocalPileCounters(targetPosition);
+                    this.updateCardsRemaining();
+                    
+                    console.log('✅ Carta colocada correctamente en posición', targetPosition);
+                    this.showMessage(`¡Correcto! ${dragData.cardData.value} colocada en su posición`);
+                    
+                    // Actualizar estado del turno
+                    this.advanceTurn(dragData.cardData.value);
+                    
+                    // Verificar victoria
+                    this.checkWinCondition();
+                }
+            }
+
+            // Manejar drop incorrecto (carta en posición incorrecta)
+            handleIncorrectDrop(dragData, targetPosition) {
+                console.log('❌ Drop incorrecto - devolviendo carta a posición original');
+                
+                // Mostrar mensaje de error
+                this.showErrorMessage(
+                    `❌ Error: La carta ${dragData.cardData.value} no pertenece a la posición ${targetPosition}`,
+                    `La carta debe ir a la posición ${dragData.cardData.value}. ¡Inténtalo de nuevo!`
+                );
+                
+                // La carta ya está en su posición original porque no la removimos
+                // Solo necesitamos restaurar el estado visual
+                this.restoreCardToOriginalState(dragData);
+            }
+
+            // Restaurar carta a su estado original después de un drop incorrecto
+            restoreCardToOriginalState(dragData) {
+                const sourcePosition = this.positions[dragData.sourcePosition];
+                
+                // Encontrar la carta en la pila de origen
+                const cardObj = sourcePosition.faceDownPile.cards.find(c => 
+                    c.data.value === dragData.cardData.value && c.data.suit === dragData.cardData.suit
+                );
+                
+                if (cardObj && cardObj.element) {
+                    // Remover clase de arrastre
+                    cardObj.element.classList.remove('dragging');
+                    
+                    // Animación de "rebote" para indicar que regresó
+                    cardObj.element.style.transform = 'scale(1.1)';
+                    cardObj.element.style.transition = 'transform 0.3s ease';
+                    
+                    setTimeout(() => {
+                        cardObj.element.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            cardObj.element.style.transition = '';
+                        }, 300);
+                    }, 100);
+                    
+                    console.log('🔄 Carta restaurada a posición original:', dragData.sourcePosition);
+                }
+            }
+
+            // Manejar cambio de posición (carta a posición incorrecta)
+            handlePositionChange(dragData, targetPosition) {
+                const sourcePosition = this.positions[dragData.sourcePosition];
+                
+                // Encontrar y remover la carta de la posición origen
+                const cardIndex = sourcePosition.faceDownPile.cards.findIndex(c => 
+                    c.data.value === dragData.cardData.value && c.data.suit === dragData.cardData.suit
+                );
+                
+                if (cardIndex !== -1) {
+                    const cardObj = sourcePosition.faceDownPile.cards[cardIndex];
+                    sourcePosition.faceDownPile.cards.splice(cardIndex, 1);
+                    cardObj.element.remove();
+                    
+                    // Resetear carta para que aparezca boca abajo en nueva posición
+                    dragData.cardData.faceUp = false;
+                    this.addCardToLocalPile(targetPosition, dragData.cardData, 'faceDown');
+                    
+                    // Actualizar contadores
+                    this.updateLocalPileCounters(dragData.sourcePosition);
+                    this.updateLocalPileCounters(targetPosition);
+                    
+                    console.log(`🔄 Carta ${dragData.cardData.value} movida a posición ${targetPosition}`);
+                }
+            }
+
+            // Mostrar mensaje temporal
+            showMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = text;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    z-index: 2000;
+                    font-weight: bold;
+                `;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 2000);
+            }
+
+            // Mostrar mensaje de error específico con detalles
+            showErrorMessage(primaryMessage, detailMessage = '') {
+                const messageDiv = document.createElement('div');
+                
+                // Crear contenido con mensaje principal y detalle
+                const fullMessage = detailMessage ? `${primaryMessage}\n${detailMessage}` : primaryMessage;
+                messageDiv.textContent = fullMessage;
+                
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #ff4444;
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 8px;
+                    z-index: 2000;
+                    font-weight: bold;
+                    border: 2px solid #cc0000;
+                    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+                    white-space: pre-line;
+                    text-align: center;
+                    animation: shake 0.5s ease-in-out;
+                `;
+                
+                // Agregar animación de vibración
+                const shakeKeyframes = document.createElement('style');
+                shakeKeyframes.textContent = `
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(-50%) translateY(0); }
+                        25% { transform: translateX(-50%) translateY(-5px); }
+                        75% { transform: translateX(-50%) translateY(5px); }
+                    }
+                `;
+                document.head.appendChild(shakeKeyframes);
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                    shakeKeyframes.remove();
+                }, 4000); // Mostrar errores por más tiempo
+            }
+
+            // Avanzar al siguiente turno
+            advanceTurn(placedCardValue) {
+                // Remover highlights anteriores
+                document.querySelectorAll('.card-position').forEach(pos => {
+                    pos.classList.remove('highlight-correct', 'position-active');
+                });
+                
+                // La próxima posición activa es el valor de la carta que se acaba de colocar
+                this.turnState.currentActivePosition = placedCardValue;
+                this.turnState.mustPlaceCard = false;
+                this.turnState.cardToPlace = null;
+                this.turnState.canFlipCard = true;
+                
+                // Resaltar la nueva posición activa
+                const nextPosition = document.querySelector(`[data-position="${placedCardValue}"]`);
+                if (nextPosition) {
+                    nextPosition.classList.add('position-active');
+                }
+                
+                // Actualizar indicador en la UI
+                this.updateActivePositionIndicator();
+                
+                console.log('🎯 Turno avanzado a posición:', placedCardValue);
+                
+                // Si la posición activa no tiene más cartas boca abajo, elegir una nueva posición
+                const activePosition = this.positions[placedCardValue];
+                if (activePosition && activePosition.faceDownPile.cards.length === 0) {
+                    this.findNextAvailablePosition();
+                }
+            }
+
+            // Encontrar la siguiente posición disponible con cartas boca abajo
+            findNextAvailablePosition() {
+                const positionOrder = ['K', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q'];
+                
+                for (const pos of positionOrder) {
+                    const position = this.positions[pos];
+                    if (position && position.faceDownPile.cards.length > 0) {
+                        this.turnState.currentActivePosition = pos;
+                        
+                        // Actualizar UI
+                        document.querySelectorAll('.card-position').forEach(p => {
+                            p.classList.remove('position-active');
+                        });
+                        
+                        const nextPosition = document.querySelector(`[data-position="${pos}"]`);
+                        if (nextPosition) {
+                            nextPosition.classList.add('position-active');
+                        }
+                        
+                        this.updateActivePositionIndicator();
+                        this.showMessage(`Continúa volteando cartas en la posición ${pos}`);
+                        return;
+                    }
+                }
+                
+                // No hay más cartas boca abajo
+                this.showMessage('¡No hay más cartas para voltear!');
+            }
+
+            // Actualizar indicador de posición activa en la UI
+            updateActivePositionIndicator() {
+                const statusElement = document.getElementById('game-status');
+                if (statusElement) {
+                    statusElement.textContent = `Turno: Posición ${this.turnState.currentActivePosition}`;
+                }
+            }
+
+            // Actualizar contadores de pilas locales
+            updateLocalPileCounters(positionKey) {
+                const position = this.positions[positionKey];
+                
+                // Contador pila boca abajo
+                const faceDownCounter = position.faceDownPile.element.querySelector('.pile-counter');
+                const faceDownCount = position.faceDownPile.cards.length;
+                faceDownCounter.textContent = faceDownCount;
+                faceDownCounter.classList.toggle('empty', faceDownCount === 0);
+                
+                // Contador pila boca arriba
+                const faceUpCounter = position.faceUpPile.element.querySelector('.pile-counter');
+                const faceUpCount = position.faceUpPile.cards.length;
+                faceUpCounter.textContent = faceUpCount;
+                faceUpCounter.classList.toggle('empty', faceUpCount === 0);
+            }
+
+            // Actualizar el contador de cartas restantes
+            updateCardsRemaining() {
+                let totalFaceDownCards = 0;
+                
+                // Contar cartas boca abajo en todas las posiciones
+                Object.values(this.positions).forEach(position => {
+                    totalFaceDownCards += position.faceDownPile.cards.length;
+                });
+                
+                const cardsRemainingDisplay = document.getElementById('cards-remaining');
+                if (cardsRemainingDisplay) {
+                    cardsRemainingDisplay.textContent = `Cartas por revelar: ${totalFaceDownCards}`;
+                }
+                
+                console.log('📊 Cartas restantes:', totalFaceDownCards);
+            }
+
+            // Verificar condición de victoria
+            checkWinCondition() {
+                let allCardsInCorrectPosition = true;
+                
+                Object.entries(this.positions).forEach(([positionKey, position]) => {
+                    const correctCards = position.faceUpPile.cards.filter(cardObj => 
+                        cardObj.data.value === positionKey
+                    ).length;
+                    
+                    if (correctCards !== 4) { // Necesitamos 4 cartas de cada valor
+                        allCardsInCorrectPosition = false;
+                    }
+                });
+                
+                if (allCardsInCorrectPosition && this.gameStarted) {
+                    this.gameWon = true;
+                    this.showWinMessage();
+                }
+            }
+
+            // Mostrar mensaje de victoria
+            showWinMessage() {
+                console.log('🎉 ¡VICTORIA!');
+                document.getElementById('game-status').textContent = '¡Completado!';
+                document.getElementById('win-message').style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('win-message').style.display = 'none';
+                }, 5000);
+            }
+
+            // Inicializar juego
+            initializeGame() {
+                this.initializePositions();
+                console.log('🎲 Juego inicializado');
+            }
+
+            // Iniciar nueva partida
+            startGame() {
+                this.gameStarted = true;
+                this.turnState = {
+                    canFlipCard: true,
+                    lastFlippedCard: null,
+                    currentActivePosition: 'K', // Siempre inicia en K
+                    mustPlaceCard: false,
+                    cardToPlace: null
+                };
+                
+                // Limpiar tablero
+                Object.values(this.positions).forEach(position => {
+                    position.faceDownPile.cards = [];
+                    position.faceUpPile.cards = [];
+                    position.faceDownPile.element.querySelector('.local-pile-stack').innerHTML = '';
+                    position.faceUpPile.element.querySelector('.local-pile-stack').innerHTML = '';
+                    this.updateLocalPileCounters(position.element.dataset.position);
+                });
+                
+                // Distribuir cartas directamente a las posiciones
+                this.dealCards();
+                
+                // Actualizar UI
+                document.getElementById('game-status').textContent = 'Turno: Posición K';
+                document.getElementById('start-game-btn').classList.add('hidden');
+                document.getElementById('reset-game-btn').classList.remove('hidden');
+                document.getElementById('auto-mode-btn').classList.remove('hidden');
+                
+                // Resaltar la posición inicial (K)
+                document.querySelectorAll('.card-position').forEach(pos => {
+                    pos.classList.remove('position-active', 'highlight-correct');
+                });
+                
+                const kPosition = document.querySelector('[data-position="K"]');
+                if (kPosition) {
+                    kPosition.classList.add('position-active');
+                }
+                
+                this.showMessage('¡Juego iniciado! Comienza volteando una carta en la posición K');
+                
+                console.log('🚀 ¡Juego iniciado! Comienza en posición K');
+            }
+
+            // Reiniciar juego
+            resetGame() {
+                this.gameStarted = false;
+                
+                // Resetear estado del turno
+                this.turnState = {
+                    canFlipCard: true,
+                    lastFlippedCard: null,
+                    currentActivePosition: 'K',
+                    mustPlaceCard: false,
+                    cardToPlace: null
+                };
+                
+                // Limpiar todas las posiciones locales
+                Object.values(this.positions).forEach(position => {
+                    position.faceDownPile.cards = [];
+                    position.faceUpPile.cards = [];
+                    position.faceDownPile.element.querySelector('.local-pile-stack').innerHTML = '';
+                    position.faceUpPile.element.querySelector('.local-pile-stack').innerHTML = '';
+                    this.updateLocalPileCounters(position.element.dataset.position);
+                });
+                
+                // Remover highlights
+                document.querySelectorAll('.card-position').forEach(pos => {
+                    pos.classList.remove('position-active', 'highlight-correct');
+                });
+                
+                this.cardsRemaining = 0;
+                this.updateCardsRemaining();
+                this.gameWon = false;
+                this.autoModeActive = false;
+                
+                // Actualizar UI
+                document.getElementById('game-status').textContent = 'Presiona "Iniciar Juego"';
+                document.getElementById('start-game-btn').classList.remove('hidden');
+                document.getElementById('reset-game-btn').classList.add('hidden');
+                document.getElementById('auto-mode-btn').classList.add('hidden');
+                document.getElementById('cards-remaining').textContent = 'Cartas por revelar: 0';
+                
+                console.log('🔄 Juego reiniciado - listo para nueva partida');
+            }
+
+            // =====================================================
+            // MODO AUTOMÁTICO
+            // =====================================================
+
+            // Iniciar modo automático para resolver el juego
+            startAutoMode() {
+                if (!this.gameStarted) {
+                    this.showMessage('⚠️ Debes iniciar el juego primero');
+                    return;
+                }
+
+                // Cambiar estado del botón
+                const autoBtn = document.getElementById('auto-mode-btn');
+                autoBtn.textContent = '⏸️ Pausar Auto';
+                autoBtn.classList.remove('btn-warning');
+                autoBtn.classList.add('btn-danger');
+                
+                this.autoModeActive = true;
+                this.autoModeSpeed = 1000; // 1 segundo entre movimientos
+                
+                this.showMessage('🤖 Modo automático activado - El juego se resolverá solo');
+                document.getElementById('game-status').textContent = 'Modo Automático: Resolviendo...';
+                
+                // Iniciar resolución automática
+                setTimeout(() => this.autoSolveStep(), 500);
+                
+                // Cambiar event listener para pausar
+                autoBtn.onclick = () => this.pauseAutoMode();
+            }
+
+            // Pausar modo automático
+            pauseAutoMode() {
+                this.autoModeActive = false;
+                
+                const autoBtn = document.getElementById('auto-mode-btn');
+                autoBtn.textContent = '🤖 Continuar Auto';
+                autoBtn.classList.remove('btn-danger');
+                autoBtn.classList.add('btn-warning');
+                
+                this.showMessage('⏸️ Modo automático pausado');
+                document.getElementById('game-status').textContent = 'Modo Automático: Pausado';
+                
+                // Cambiar event listener para continuar
+                autoBtn.onclick = () => this.resumeAutoMode();
+            }
+
+            // Continuar modo automático
+            resumeAutoMode() {
+                this.autoModeActive = true;
+                
+                const autoBtn = document.getElementById('auto-mode-btn');
+                autoBtn.textContent = '⏸️ Pausar Auto';
+                autoBtn.classList.remove('btn-warning');
+                autoBtn.classList.add('btn-danger');
+                
+                this.showMessage('▶️ Modo automático reanudado');
+                document.getElementById('game-status').textContent = 'Modo Automático: Resolviendo...';
+                
+                // Continuar resolución
+                setTimeout(() => this.autoSolveStep(), 500);
+                
+                // Cambiar event listener para pausar
+                autoBtn.onclick = () => this.pauseAutoMode();
+            }
+
+            // Paso de resolución automática
+            autoSolveStep() {
+                if (!this.autoModeActive || this.gameWon) {
+                    this.finishAutoMode();
+                    return;
+                }
+
+                // Buscar cartas que se pueden mover automáticamente
+                const moveFound = this.findAndExecuteAutoMove();
+                
+                if (moveFound) {
+                    // Continuar con el siguiente paso después del delay
+                    setTimeout(() => this.autoSolveStep(), this.autoModeSpeed);
+                } else {
+                    // No hay más movimientos posibles, voltear carta
+                    const cardFlipped = this.autoFlipCard();
+                    
+                    if (cardFlipped) {
+                        // Después de voltear, continuar
+                        setTimeout(() => this.autoSolveStep(), this.autoModeSpeed);
+                    } else {
+                        // No hay más cartas para voltear
+                        this.finishAutoMode();
+                    }
+                }
+            }
+
+            // Buscar y ejecutar un movimiento automático
+            findAndExecuteAutoMove() {
+                // Buscar cartas boca arriba que se pueden mover
+                for (const [position, data] of Object.entries(this.positions)) {
+                    if (data.faceUpPile.cards.length > 0) {
+                        // Hay cartas boca arriba en esta posición
+                        const topCard = data.faceUpPile.cards[data.faceUpPile.cards.length - 1];
+                        const correctPosition = topCard.data.value;
+                        
+                        // Si la carta no está en su posición correcta
+                        if (position !== correctPosition) {
+                            // Verificar si la posición correcta está disponible
+                            const targetData = this.positions[correctPosition];
+                            if (targetData && targetData.faceUpPile.cards.length === 0) {
+                                // Realizar el movimiento automático
+                                this.executeAutoMove(position, correctPosition, topCard);
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // Ejecutar movimiento automático
+            executeAutoMove(fromPosition, toPosition, card) {
+                console.log(`🤖 AUTO: Moviendo ${card.data.value} de ${fromPosition} a ${toPosition}`);
+                
+                // Simular el arrastre y soltar
+                const dragData = {
+                    sourcePosition: fromPosition,
+                    cardData: card.data
+                };
+                
+                // Usar la lógica existente de drop correcto
+                this.handleCorrectDrop(dragData, toPosition);
+                
+                // Actualizar mensaje
+                this.showMessage(`🤖 Movimiento automático: ${card.data.value} → Posición ${toPosition}`);
+            }
+
+            // Voltear carta automáticamente
+            autoFlipCard() {
+                // Buscar posiciones con cartas boca abajo para voltear
+                for (const [position, data] of Object.entries(this.positions)) {
+                    if (data.faceDownPile.cards.length > 0 && this.canFlipCardInPosition(position)) {
+                        // Voltear la primera carta disponible
+                        const topCard = data.faceDownPile.cards[data.faceDownPile.cards.length - 1];
+                        this.flipCard(topCard.element, position);
+                        
+                        console.log(`🤖 AUTO: Volteando carta en posición ${position}`);
+                        this.showMessage(`🤖 Volteando carta en posición ${position}`);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // Verificar si se puede voltear carta en una posición
+            canFlipCardInPosition(position) {
+                // Aplicar las mismas reglas del juego manual
+                const currentPosition = this.currentTurn?.expectedPosition;
+                return !currentPosition || position === currentPosition || 
+                       this.positions[position].faceUpPile.cards.length === 0;
+            }
+
+            // Finalizar modo automático
+            finishAutoMode() {
+                this.autoModeActive = false;
+                
+                const autoBtn = document.getElementById('auto-mode-btn');
+                autoBtn.textContent = '🤖 Modo Automático';
+                autoBtn.classList.remove('btn-danger');
+                autoBtn.classList.add('btn-warning');
+                
+                if (this.gameWon) {
+                    this.showMessage('🎉 ¡Juego resuelto automáticamente!');
+                    document.getElementById('game-status').textContent = '¡Victoria Automática!';
+                } else {
+                    this.showMessage('🤖 Modo automático finalizado');
+                    document.getElementById('game-status').textContent = this.currentTurn ? 
+                        `Turno: Posición ${this.currentTurn.expectedPosition}` : 'Juego en curso';
+                }
+                
+                // Restaurar event listener original
+                autoBtn.onclick = () => this.startAutoMode();
+            }
+
+            // Configurar event listeners principales
+            setupEventListeners() {
+                // Botón de iniciar juego
+                document.getElementById('start-game-btn').addEventListener('click', () => {
+                    console.log('🎮 Iniciando nuevo juego...');
+                    this.startGame();
+                });
+
+                // Botón de reiniciar juego
+                document.getElementById('reset-game-btn').addEventListener('click', () => {
+                    if (confirm('¿Estás seguro de que quieres reiniciar el juego?')) {
+                        console.log('🔄 Reiniciando juego...');
+                        this.resetGame();
+                    }
+                });
+
+                // Botón de modo automático
+                document.getElementById('auto-mode-btn').addEventListener('click', () => {
+                    console.log('🤖 Iniciando modo automático...');
+                    this.startAutoMode();
+                });
+                
+                console.log('🎮 Event listeners configurados correctamente');
+            }
+        }
+
+        // =====================================================
+        // INICIALIZACIÓN
+        // =====================================================
+        let game;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎮 Future Cards Game iniciado');
+            game = new FutureCardsGame();
+        });
+    </script>
+</body>
+</html>

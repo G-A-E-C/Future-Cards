@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Específico de Cartas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #0d1421;
+            color: white;
+        }
+        .card {
+            width: 70px;
+            height: 98px;
+            margin: 10px;
+            display: inline-block;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card.error {
+            border-color: red;
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+        .card.success {
+            border-color: green;
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        .test-info {
+            background-color: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Específico - Cartas del Juego</h1>
+    
+    <div class="test-info">
+        <h3>Estado de carga:</h3>
+        <p>Imágenes cargadas: <span id="loaded-count">0</span></p>
+        <p>Errores: <span id="error-count">0</span></p>
+        <p>Total: <span id="total-count">0</span></p>
+    </div>
+    
+    <h2>Reverso de Carta</h2>
+    <div class="card">
+        <img src="img/cards/Backcard.png" alt="Reverso">
+    </div>
+    
+    <h2>Muestra de Cartas (todas las cartas del juego)</h2>
+    <div id="cards-container"></div>
+    
+    <script>
+        const suits = ['C', 'D', 'H', 'S'];
+        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        
+        let loaded = 0;
+        let errors = 0;
+        let total = 0;
+        
+        function updateCounters() {
+            document.getElementById('loaded-count').textContent = loaded;
+            document.getElementById('error-count').textContent = errors;
+            document.getElementById('total-count').textContent = total;
+        }
+        
+        function createCard(value, suit) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card';
+            
+            const img = document.createElement('img');
+            img.src = `img/cards/${value}-${suit}.png`;
+            img.alt = `${value} de ${suit}`;
+            
+            img.addEventListener('load', () => {
+                loaded++;
+                cardDiv.classList.add('success');
+                console.log(`✅ Cargada: ${value}-${suit}`);
+                updateCounters();
+            });
+            
+            img.addEventListener('error', () => {
+                errors++;
+                cardDiv.classList.add('error');
+                console.error(`❌ Error: ${value}-${suit} (${img.src})`);
+                updateCounters();
+            });
+            
+            cardDiv.appendChild(img);
+            total++;
+            return cardDiv;
+        }
+        
+        // Crear todas las cartas
+        const container = document.getElementById('cards-container');
+        
+        values.forEach(value => {
+            suits.forEach(suit => {
+                const card = createCard(value, suit);
+                container.appendChild(card);
+            });
+        });
+        
+        // También test para el reverso
+        const backcardImg = document.querySelector('img[src="img/cards/Backcard.png"]');
+        backcardImg.addEventListener('load', () => {
+            loaded++;
+            backcardImg.parentElement.classList.add('success');
+            console.log('✅ Backcard cargada');
+            updateCounters();
+        });
+        
+        backcardImg.addEventListener('error', () => {
+            errors++;
+            backcardImg.parentElement.classList.add('error');
+            console.error('❌ Error: Backcard');
+            updateCounters();
+        });
+        
+        total++; // Por la backcard
+        updateCounters();
+        
+        console.log('Test iniciado - verificando carga de', total, 'imágenes');
+    </script>
+</body>
+</html>

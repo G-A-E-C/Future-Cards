@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Cards - Juego de Cartas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1a1a2e;
+            color: #eee;
+            overflow: hidden;
+        }
+        
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+        }
+        
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        /* Pantalla Home */
+        .home-background {
+            width: 100%;
+            height: 100%;
+            background-image: url('img/Home.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 40px 20px;
+        }
+        
+        .title-container {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        .title-image {
+            max-width: 400px;
+            width: 80%;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+            }
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .menu-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .menu-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .menu-button img {
+            width: 200px;
+            height: auto;
+            display: block;
+        }
+        
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            z-index: 1000;
+            text-align: center;
+            border: 2px solid #4CAF50;
+        }
+        
+        /* Diseño responsivo */
+        @media (max-width: 768px) {
+            .title-image {
+                max-width: 300px;
+                width: 90%;
+            }
+            
+            .title-container {
+                margin-bottom: 30px;
+            }
+            
+            .menu-button img {
+                width: 150px;
+            }
+            
+            .menu-buttons {
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .title-image {
+                max-width: 250px;
+            }
+            
+            .menu-button img {
+                width: 120px;
+            }
+            
+            .home-background {
+                padding: 20px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- FASE 1: Pantalla Inicial (Home) -->
+    <div id="home-screen" class="screen active">
+        <div class="home-background">
+            <div class="title-container">
+                <img src="img/title.png" alt="Future Cards" class="title-image">
+            </div>
+            <div class="menu-buttons">
+                <button id="play-btn" class="menu-button">
+                    <img src="img/PlayBtm.png" alt="Play">
+                </button>
+                <button id="settings-btn" class="menu-button">
+                    <img src="img/Settings Btm.png" alt="Settings">
+                </button>
+                <button id="exit-btn" class="menu-button">
+                    <img src="img/Exit.png" alt="Exit">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🎮 Future Cards - Versión Principal cargada');
+        
+        // CONFIGURACIÓN DE NAVEGACIÓN SIMPLE Y CONFIABLE
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM completamente cargado');
+            
+            // Configurar botón de Play
+            const playButton = document.getElementById('play-btn');
+            if (playButton) {
+                console.log('✅ Botón Play encontrado');
+                playButton.addEventListener('click', function() {
+                    console.log('🎮 Botón Play presionado - Redirigiendo...');
+                    window.location.href = 'game.html';
+                });
+            } else {
+                console.error('❌ Botón Play NO encontrado');
+            }
+            
+            // Configurar botón de Settings (opcional)
+            const settingsButton = document.getElementById('settings-btn');
+            if (settingsButton) {
+                settingsButton.addEventListener('click', function() {
+                    alert('⚙️ Configuraciones - Próximamente disponible');
+                });
+            }
+            
+            // Configurar botón de Exit (opcional)
+            const exitButton = document.getElementById('exit-btn');
+            if (exitButton) {
+                exitButton.addEventListener('click', function() {
+                    if (confirm('¿Estás seguro de que quieres salir?')) {
+                        window.close();
+                    }
+                });
+            }
+        });
+        
+        // Debug: verificar carga de imágenes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('img').forEach((img, index) => {
+                img.onload = () => console.log(`✅ Imagen ${index + 1} cargada: ${img.alt}`);
+                img.onerror = () => console.error(`❌ Error cargando imagen ${index + 1}: ${img.src}`);
+            });
+        });
+        
+        // Test adicional del botón
+        setTimeout(() => {
+            const playBtn = document.getElementById('play-btn');
+            console.log('🔍 Test del botón Play:', playBtn ? 'ENCONTRADO' : 'NO ENCONTRADO');
+            if (playBtn) {
+                console.log('🎯 Event listeners del botón:', playBtn.onclick);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

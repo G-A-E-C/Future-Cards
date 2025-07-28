@@ -286,8 +286,15 @@
         }
 
         .position-active {
-            border-color: #4CAF50;
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+            border-color: #4CAF50 !important;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.8), 0 0 40px rgba(76, 175, 80, 0.4) !important;
+            animation: pulseGreen 2s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8), 0 0 40px rgba(76, 175, 80, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(76, 175, 80, 1), 0 0 60px rgba(76, 175, 80, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8), 0 0 40px rgba(76, 175, 80, 0.4); }
         }
 
         .pile-counter {
@@ -316,16 +323,16 @@
         .row-1.col-3 { grid-column: 3; grid-row: 1; } /* 3 */
         .row-1.col-4 { grid-column: 4; grid-row: 1; } /* 4 */
 
-        .row-2.col-1 { grid-column: 1; grid-row: 2; } /* 5 */
-        .row-2.col-4 { grid-column: 4; grid-row: 2; } /* 6 */
+        .row-2.col-1 { grid-column: 1; grid-row: 2; } /* Q */
+        .row-2.col-4 { grid-column: 4; grid-row: 2; } /* 5 */
 
-        .row-3.col-1 { grid-column: 1; grid-row: 3; } /* 7 */
-        .row-3.col-4 { grid-column: 4; grid-row: 3; } /* 8 */
+        .row-3.col-1 { grid-column: 1; grid-row: 3; } /* J */
+        .row-3.col-4 { grid-column: 4; grid-row: 3; } /* 6 */
 
-        .row-4.col-1 { grid-column: 1; grid-row: 4; } /* 9 */
-        .row-4.col-2 { grid-column: 2; grid-row: 4; } /* 10 */
-        .row-4.col-3 { grid-column: 3; grid-row: 4; } /* J */
-        .row-4.col-4 { grid-column: 4; grid-row: 4; } /* Q */
+        .row-4.col-1 { grid-column: 1; grid-row: 4; } /* 10 */
+        .row-4.col-2 { grid-column: 2; grid-row: 4; } /* 9 */
+        .row-4.col-3 { grid-column: 3; grid-row: 4; } /* 8 */
+        .row-4.col-4 { grid-column: 4; grid-row: 4; } /* 7 */
 
         /* Center K position */
         .center-k {
@@ -482,7 +489,21 @@
             </div>
 
             <!-- Fila Izquierda y Derecha: 5, 6 -->
-            <div class="card-position row-2 col-1" data-position="5">
+            <div class="card-position row-2 col-1" data-position="Q">
+                <div class="position-label">Q</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-2 col-4" data-position="5">
                 <div class="position-label">5</div>
                 <div class="position-piles">
                     <div class="local-pile face-down-local" data-pile="faceDown">
@@ -496,79 +517,8 @@
                 </div>
             </div>
 
-            <div class="card-position row-2 col-4" data-position="6">
-                <div class="position-label">6</div>
-                <div class="position-piles">
-                    <div class="local-pile face-down-local" data-pile="faceDown">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                    <div class="local-pile face-up-local" data-pile="faceUp">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Fila 3: 7, 8 -->
-            <div class="card-position row-3 col-1" data-position="7">
-                <div class="position-label">7</div>
-                <div class="position-piles">
-                    <div class="local-pile face-down-local" data-pile="faceDown">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                    <div class="local-pile face-up-local" data-pile="faceUp">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-position row-3 col-4" data-position="8">
-                <div class="position-label">8</div>
-                <div class="position-piles">
-                    <div class="local-pile face-down-local" data-pile="faceDown">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                    <div class="local-pile face-up-local" data-pile="faceUp">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fila Inferior: 9, 10, J, Q -->
-            <div class="card-position row-4 col-1" data-position="9">
-                <div class="position-label">9</div>
-                <div class="position-piles">
-                    <div class="local-pile face-down-local" data-pile="faceDown">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                    <div class="local-pile face-up-local" data-pile="faceUp">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-position row-4 col-2" data-position="10">
-                <div class="position-label">10</div>
-                <div class="position-piles">
-                    <div class="local-pile face-down-local" data-pile="faceDown">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                    <div class="local-pile face-up-local" data-pile="faceUp">
-                        <div class="local-pile-stack"></div>
-                        <div class="pile-counter empty">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-position row-4 col-3" data-position="J">
+            <div class="card-position row-3 col-1" data-position="J">
                 <div class="position-label">J</div>
                 <div class="position-piles">
                     <div class="local-pile face-down-local" data-pile="faceDown">
@@ -582,8 +532,65 @@
                 </div>
             </div>
 
-            <div class="card-position row-4 col-4" data-position="Q">
-                <div class="position-label">Q</div>
+            <div class="card-position row-3 col-4" data-position="6">
+                <div class="position-label">6</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila Inferior: 9, 10, J, Q -->
+            <div class="card-position row-4 col-1" data-position="10">
+                <div class="position-label">10</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-4 col-2" data-position="9">
+                <div class="position-label">9</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-4 col-3" data-position="8">
+                <div class="position-label">8</div>
+                <div class="position-piles">
+                    <div class="local-pile face-down-local" data-pile="faceDown">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                    <div class="local-pile face-up-local" data-pile="faceUp">
+                        <div class="local-pile-stack"></div>
+                        <div class="pile-counter empty">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-position row-4 col-4" data-position="7">
+                <div class="position-label">7</div>
                 <div class="position-piles">
                     <div class="local-pile face-down-local" data-pile="faceDown">
                         <div class="local-pile-stack"></div>
@@ -890,8 +897,10 @@
                 this.turnState.mustPlaceCard = true;
                 this.turnState.cardToPlace = card;
                 
-                // Animación de volteo
+                // Animación de volteo - más rápida para modo automático
                 cardElement.classList.add('flipping');
+                
+                const flipDelay = this.autoModeActive ? 150 : 300; // Más rápido en modo auto
                 
                 setTimeout(() => {
                     // Cambiar imagen a la carta real
@@ -902,37 +911,45 @@
                     // Agregar clase para indicar que está volteada
                     cardElement.classList.add('revealed');
                     
-                    // Mostrar mensaje de instrucción
-                    this.showMessage(`Carta ${card.value} revelada. Colócala en su posición correcta para continuar.`);
+                    // Mostrar mensaje de instrucción solo si no es modo automático
+                    if (!this.autoModeActive) {
+                        this.showMessage(`Carta ${card.value} revelada. Colócala en su posición correcta para continuar.`);
+                        // Resaltar posición correcta
+                        this.highlightCorrectPosition(card.value);
+                    }
                     
-                    // Resaltar posición correcta
-                    this.highlightCorrectPosition(card.value);
-                    
-                }, 300);
+                }, flipDelay);
             }
 
             // Verificar si se puede voltear una carta en una posición específica
             canFlipCardInPosition(positionKey) {
+                console.log(`🔍 Verificando si se puede voltear carta en posición ${positionKey}`);
+                console.log(`   - Posición activa actual: ${this.turnState.currentActivePosition}`);
+                console.log(`   - Debe colocar carta: ${this.turnState.mustPlaceCard}`);
+                
                 // Si hay una carta que debe colocarse primero, no se puede voltear nada más
                 if (this.turnState.mustPlaceCard) {
+                    console.log(`   ❌ No se puede - debe colocar carta ${this.turnState.cardToPlace?.value} primero`);
                     return false;
                 }
                 
                 // Solo se puede voltear en la posición activa actual
-                return positionKey === this.turnState.currentActivePosition;
+                const canFlip = positionKey === this.turnState.currentActivePosition;
+                console.log(`   ${canFlip ? '✅' : '❌'} ${canFlip ? 'Sí se puede' : 'No se puede'} voltear en esta posición`);
+                return canFlip;
             }
 
             // Obtener razón por la cual no se puede voltear una carta
             getFlipRestrictionReason(positionKey) {
                 if (this.turnState.mustPlaceCard) {
-                    return `Debes colocar la carta ${this.turnState.cardToPlace.value} en su posición correcta antes de continuar`;
+                    return `🚫 Debes colocar la carta ${this.turnState.cardToPlace.value} en su posición correcta antes de continuar`;
                 }
                 
                 if (positionKey !== this.turnState.currentActivePosition) {
-                    return `Solo puedes voltear cartas en la posición ${this.turnState.currentActivePosition} en este momento`;
+                    return `🎯 Solo puedes voltear cartas en la posición ${this.turnState.currentActivePosition}. Intentaste voltear en posición ${positionKey}`;
                 }
                 
-                return "No se puede voltear esta carta en este momento";
+                return "❌ No se puede voltear esta carta en este momento";
             }
 
             // Resaltar la posición correcta para una carta
@@ -982,7 +999,7 @@
                     
                     console.log('✅ Carta movida a pila boca arriba en posición', positionKey);
                     this.updateCardsRemaining();
-                    this.checkWinCondition();
+                    this.checkWinCondition(); // Esto incluye la verificación de Game Over
                 }
             }
 
@@ -1011,15 +1028,30 @@
             // Manejar drop correcto (carta en su posición correcta)
             handleCorrectDrop(dragData, targetPosition) {
                 const sourcePosition = this.positions[dragData.sourcePosition];
+                let cardIndex = -1;
+                let cardObj = null;
+                let sourcePileType = dragData.sourcePile || 'faceDown';
                 
-                // Encontrar y remover la carta de la posición origen
-                const cardIndex = sourcePosition.faceDownPile.cards.findIndex(c => 
-                    c.data.value === dragData.cardData.value && c.data.suit === dragData.cardData.suit
-                );
+                // Buscar en la pila correspondiente
+                if (sourcePileType === 'faceUp') {
+                    cardIndex = sourcePosition.faceUpPile.cards.findIndex(c => 
+                        c.data.value === dragData.cardData.value && c.data.suit === dragData.cardData.suit
+                    );
+                    if (cardIndex !== -1) {
+                        cardObj = sourcePosition.faceUpPile.cards[cardIndex];
+                        sourcePosition.faceUpPile.cards.splice(cardIndex, 1);
+                    }
+                } else {
+                    cardIndex = sourcePosition.faceDownPile.cards.findIndex(c => 
+                        c.data.value === dragData.cardData.value && c.data.suit === dragData.cardData.suit
+                    );
+                    if (cardIndex !== -1) {
+                        cardObj = sourcePosition.faceDownPile.cards[cardIndex];
+                        sourcePosition.faceDownPile.cards.splice(cardIndex, 1);
+                    }
+                }
                 
-                if (cardIndex !== -1) {
-                    const cardObj = sourcePosition.faceDownPile.cards[cardIndex];
-                    sourcePosition.faceDownPile.cards.splice(cardIndex, 1);
+                if (cardObj) {
                     cardObj.element.remove();
                     
                     // Agregar a pila boca arriba de la posición correcta
@@ -1036,7 +1068,7 @@
                     // Actualizar estado del turno
                     this.advanceTurn(dragData.cardData.value);
                     
-                    // Verificar victoria
+                    // Verificar victoria y game over
                     this.checkWinCondition();
                 }
             }
@@ -1112,6 +1144,11 @@
 
             // Mostrar mensaje temporal
             showMessage(text) {
+                // En modo automático, mostrar mensajes menos frecuentemente
+                if (this.autoModeActive && Math.random() < 0.7) {
+                    return; // 70% de probabilidad de NO mostrar mensaje en modo auto
+                }
+                
                 const messageDiv = document.createElement('div');
                 messageDiv.textContent = text;
                 messageDiv.style.cssText = `
@@ -1129,9 +1166,11 @@
                 
                 document.body.appendChild(messageDiv);
                 
+                // Duración más corta en modo automático
+                const duration = this.autoModeActive ? 800 : 2000;
                 setTimeout(() => {
                     messageDiv.remove();
-                }, 2000);
+                }, duration);
             }
 
             // Mostrar mensaje de error específico con detalles
@@ -1281,8 +1320,11 @@
                 console.log('📊 Cartas restantes:', totalFaceDownCards);
             }
 
-            // Verificar condición de victoria
+            // Verificar condición de victoria y game over
             checkWinCondition() {
+                // Primero verificar Game Over específico para posición K
+                this.checkGameOverCondition();
+                
                 let allCardsInCorrectPosition = true;
                 
                 Object.entries(this.positions).forEach(([positionKey, position]) => {
@@ -1301,6 +1343,30 @@
                 }
             }
 
+            // Verificar condición específica de Game Over para posición K
+            checkGameOverCondition() {
+                if (!this.gameStarted) return;
+                
+                const kPosition = this.positions['K'];
+                if (!kPosition) return;
+                
+                // Contar cartas K en la pila boca arriba de la posición K
+                const kCardsInPosition = kPosition.faceUpPile.cards.filter(cardObj => 
+                    cardObj.data.value === 'K'
+                ).length;
+                
+                // Verificar si hay cartas boca abajo en la posición K
+                const faceDownCardsInK = kPosition.faceDownPile.cards.length;
+                
+                console.log(`🔍 Game Over Check - K cards: ${kCardsInPosition}, Face down in K: ${faceDownCardsInK}`);
+                
+                // Condición de Game Over: 4 cartas K en posición K Y sin cartas boca abajo en K
+                if (kCardsInPosition === 4 && faceDownCardsInK === 0) {
+                    console.log('💀 GAME OVER - Posición K completada sin más cartas');
+                    this.showGameOverMessage();
+                }
+            }
+
             // Mostrar mensaje de victoria
             showWinMessage() {
                 console.log('🎉 ¡VICTORIA!');
@@ -1310,6 +1376,74 @@
                 setTimeout(() => {
                     document.getElementById('win-message').style.display = 'none';
                 }, 5000);
+            }
+
+            // Mostrar mensaje de Game Over
+            showGameOverMessage() {
+                console.log('💀 ¡GAME OVER!');
+                this.gameStarted = false; // Detener el juego
+                
+                // Crear mensaje de Game Over
+                const gameOverDiv = document.createElement('div');
+                gameOverDiv.id = 'game-over-message';
+                gameOverDiv.innerHTML = `
+                    <div style="font-size: 32px; margin-bottom: 20px;">💀 GAME OVER 💀</div>
+                    <div style="font-size: 18px; margin-bottom: 10px;">La posición K está completa</div>
+                    <div style="font-size: 16px; margin-bottom: 20px;">No puedes continuar el juego sin cartas en K</div>
+                    <button onclick="game.resetGame()" style="
+                        background: #4CAF50;
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        font-size: 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    ">🔄 Reiniciar Juego</button>
+                `;
+                
+                gameOverDiv.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #ff4444, #cc0000);
+                    color: white;
+                    padding: 40px;
+                    border-radius: 20px;
+                    text-align: center;
+                    font-weight: bold;
+                    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+                    z-index: 2000;
+                    border: 3px solid #ffff00;
+                    animation: gameOverPulse 2s infinite;
+                `;
+                
+                // Agregar animación CSS
+                const gameOverStyles = document.createElement('style');
+                gameOverStyles.textContent = `
+                    @keyframes gameOverPulse {
+                        0%, 100% { 
+                            box-shadow: 0 0 50px rgba(255, 68, 68, 0.8), 0 0 100px rgba(255, 255, 0, 0.5); 
+                            transform: translate(-50%, -50%) scale(1);
+                        }
+                        50% { 
+                            box-shadow: 0 0 70px rgba(255, 68, 68, 1), 0 0 120px rgba(255, 255, 0, 0.8); 
+                            transform: translate(-50%, -50%) scale(1.02);
+                        }
+                    }
+                `;
+                document.head.appendChild(gameOverStyles);
+                
+                document.body.appendChild(gameOverDiv);
+                
+                // Actualizar estado del juego
+                document.getElementById('game-status').textContent = '💀 GAME OVER - K Completada';
+                
+                // Mostrar mensaje temporal adicional
+                this.showMessage('💀 ¡GAME OVER! La posición K está completa y no hay más cartas para continuar');
+                
+                console.log('💀 Game Over message displayed');
             }
 
             // Inicializar juego
@@ -1357,9 +1491,9 @@
                     kPosition.classList.add('position-active');
                 }
                 
-                this.showMessage('¡Juego iniciado! Comienza volteando una carta en la posición K');
+                this.showMessage('🎮 ¡Juego iniciado! Solo puedes voltear cartas en la posición K para empezar. Las demás posiciones están bloqueadas.');
                 
-                console.log('🚀 ¡Juego iniciado! Comienza en posición K');
+                console.log('🚀 ¡Juego iniciado! Comienza en posición K - demás posiciones bloqueadas');
             }
 
             // Reiniciar juego
@@ -1388,6 +1522,12 @@
                 document.querySelectorAll('.card-position').forEach(pos => {
                     pos.classList.remove('position-active', 'highlight-correct');
                 });
+                
+                // Limpiar mensaje de Game Over si existe
+                const gameOverMessage = document.getElementById('game-over-message');
+                if (gameOverMessage) {
+                    gameOverMessage.remove();
+                }
                 
                 this.cardsRemaining = 0;
                 this.updateCardsRemaining();
@@ -1422,13 +1562,13 @@
                 autoBtn.classList.add('btn-danger');
                 
                 this.autoModeActive = true;
-                this.autoModeSpeed = 1000; // 1 segundo entre movimientos
+                this.autoModeSpeed = 300; // 300ms entre movimientos - RÁPIDO
                 
-                this.showMessage('🤖 Modo automático activado - El juego se resolverá solo');
-                document.getElementById('game-status').textContent = 'Modo Automático: Resolviendo...';
+                this.showMessage('🤖 Modo automático RÁPIDO activado - ¡Resolviendo a alta velocidad!');
+                document.getElementById('game-status').textContent = 'Modo Automático: Resolución RÁPIDA...';
                 
-                // Iniciar resolución automática
-                setTimeout(() => this.autoSolveStep(), 500);
+                // Iniciar resolución automática inmediata
+                setTimeout(() => this.autoSolveStep(), 200);
                 
                 // Cambiar event listener para pausar
                 autoBtn.onclick = () => this.pauseAutoMode();
@@ -1476,29 +1616,90 @@
                     return;
                 }
 
-                // Buscar cartas que se pueden mover automáticamente
+                console.log(`🤖 AUTO STEP: Estado actual - Posición activa: ${this.turnState.currentActivePosition}, Debe colocar: ${this.turnState.mustPlaceCard}`);
+
+                // Primero verificar si hay una carta que debe colocarse
+                if (this.turnState.mustPlaceCard && this.turnState.cardToPlace) {
+                    console.log(`🤖 AUTO: Hay carta volteada que debe colocarse: ${this.turnState.cardToPlace.value}`);
+                    const placed = this.autoPlaceFlippedCard();
+                    if (placed) {
+                        // Continuar rápidamente
+                        setTimeout(() => this.autoSolveStep(), this.autoModeSpeed);
+                        return;
+                    }
+                }
+
+                // Buscar cartas boca arriba mal ubicadas para mover
                 const moveFound = this.findAndExecuteAutoMove();
                 
                 if (moveFound) {
-                    // Continuar con el siguiente paso después del delay
+                    console.log(`🤖 AUTO: Movimiento de carta mal ubicada ejecutado`);
+                    // Continuar rápidamente
                     setTimeout(() => this.autoSolveStep(), this.autoModeSpeed);
                 } else {
-                    // No hay más movimientos posibles, voltear carta
+                    // No hay movimientos, intentar voltear carta
+                    console.log(`🤖 AUTO: No hay movimientos, intentando voltear carta en posición ${this.turnState.currentActivePosition}...`);
                     const cardFlipped = this.autoFlipCard();
                     
                     if (cardFlipped) {
-                        // Después de voltear, continuar
-                        setTimeout(() => this.autoSolveStep(), this.autoModeSpeed);
+                        console.log(`🤖 AUTO: Carta volteada, continuando rápidamente...`);
+                        // Tiempo mínimo para animación de volteo
+                        setTimeout(() => this.autoSolveStep(), this.autoModeSpeed + 200);
                     } else {
-                        // No hay más cartas para voltear
-                        this.finishAutoMode();
+                        console.log(`🤖 AUTO: No hay más cartas para voltear en posición activa`);
+                        // Intentar cambiar a otra posición activa
+                        if (this.autoChangeActivePosition()) {
+                            setTimeout(() => this.autoSolveStep(), this.autoModeSpeed);
+                        } else {
+                            // No hay más movimientos posibles
+                            console.log(`🤖 AUTO: No hay más movimientos posibles, finalizando...`);
+                            this.finishAutoMode();
+                        }
                     }
                 }
             }
 
+            // Cambiar automáticamente a otra posición activa
+            autoChangeActivePosition() {
+                const positionOrder = ['K', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q'];
+                
+                for (const pos of positionOrder) {
+                    const position = this.positions[pos];
+                    if (position && position.faceDownPile.cards.length > 0) {
+                        console.log(`🤖 AUTO: Cambiando posición activa a ${pos}`);
+                        
+                        this.turnState.currentActivePosition = pos;
+                        this.turnState.mustPlaceCard = false;
+                        this.turnState.cardToPlace = null;
+                        this.turnState.canFlipCard = true;
+                        
+                        // Actualizar UI
+                        document.querySelectorAll('.card-position').forEach(p => {
+                            p.classList.remove('position-active');
+                        });
+                        
+                        const nextPosition = document.querySelector(`[data-position="${pos}"]`);
+                        if (nextPosition) {
+                            nextPosition.classList.add('position-active');
+                        }
+                        
+                        this.updateActivePositionIndicator();
+                        this.showMessage(`🤖 Cambiando a posición ${pos} para continuar`);
+                        return true;
+                    }
+                }
+                
+                return false; // No hay más posiciones con cartas
+            }
+
             // Buscar y ejecutar un movimiento automático
             findAndExecuteAutoMove() {
-                // Buscar cartas boca arriba que se pueden mover
+                // No buscar movimientos si hay una carta que debe colocarse primero
+                if (this.turnState.mustPlaceCard && this.turnState.cardToPlace) {
+                    return false;
+                }
+                
+                // Buscar cartas boca arriba que están en posición incorrecta
                 for (const [position, data] of Object.entries(this.positions)) {
                     if (data.faceUpPile.cards.length > 0) {
                         // Hay cartas boca arriba en esta posición
@@ -1507,9 +1708,9 @@
                         
                         // Si la carta no está en su posición correcta
                         if (position !== correctPosition) {
-                            // Verificar si la posición correcta está disponible
+                            // Verificar si la posición correcta tiene espacio
                             const targetData = this.positions[correctPosition];
-                            if (targetData && targetData.faceUpPile.cards.length === 0) {
+                            if (targetData) {
                                 // Realizar el movimiento automático
                                 this.executeAutoMove(position, correctPosition, topCard);
                                 return true;
@@ -1520,21 +1721,57 @@
                 return false;
             }
 
-            // Ejecutar movimiento automático
-            executeAutoMove(fromPosition, toPosition, card) {
-                console.log(`🤖 AUTO: Moviendo ${card.data.value} de ${fromPosition} a ${toPosition}`);
+            // Colocar automáticamente una carta que fue volteada
+            autoPlaceFlippedCard() {
+                if (!this.turnState.cardToPlace) return false;
                 
-                // Simular el arrastre y soltar
+                const card = this.turnState.cardToPlace;
+                const cardValue = card.value;
+                const currentPosition = this.turnState.currentActivePosition;
+                
+                console.log(`🤖 AUTO: Colocando carta volteada ${cardValue} de posición ${currentPosition} a posición ${cardValue}`);
+                
+                // Encontrar la carta volteada en la pila boca abajo
+                const sourcePosition = this.positions[currentPosition];
+                const cardIndex = sourcePosition.faceDownPile.cards.findIndex(c => 
+                    c.data.value === cardValue && c.data.suit === card.suit && c.element.classList.contains('revealed')
+                );
+                
+                if (cardIndex !== -1) {
+                    const cardObj = sourcePosition.faceDownPile.cards[cardIndex];
+                    
+                    // Simular el arrastre y drop correcto
+                    const dragData = {
+                        sourcePosition: currentPosition,
+                        cardData: card,
+                        sourcePile: 'faceDown'
+                    };
+                    
+                    this.showMessage(`🤖 Colocando carta ${cardValue} en posición ${cardValue}`);
+                    this.handleCorrectDrop(dragData, cardValue);
+                    
+                    return true;
+                }
+                
+                return false;
+            }
+
+            // Ejecutar movimiento automático
+            executeAutoMove(fromPosition, toPosition, cardObj) {
+                console.log(`🤖 AUTO: Moviendo ${cardObj.data.value} de ${fromPosition} a ${toPosition}`);
+                
+                // Simular el arrastre y soltar desde pila boca arriba
                 const dragData = {
                     sourcePosition: fromPosition,
-                    cardData: card.data
+                    cardData: cardObj.data,
+                    sourcePile: 'faceUp'
                 };
                 
                 // Usar la lógica existente de drop correcto
                 this.handleCorrectDrop(dragData, toPosition);
                 
                 // Actualizar mensaje
-                this.showMessage(`🤖 Movimiento automático: ${card.data.value} → Posición ${toPosition}`);
+                this.showMessage(`🤖 Movimiento: ${cardObj.data.value} de ${fromPosition} → ${toPosition}`);
             }
 
             // Voltear carta automáticamente
@@ -1542,25 +1779,22 @@
                 // Buscar posiciones con cartas boca abajo para voltear
                 for (const [position, data] of Object.entries(this.positions)) {
                     if (data.faceDownPile.cards.length > 0 && this.canFlipCardInPosition(position)) {
-                        // Voltear la primera carta disponible
+                        // Voltear la primera carta disponible (la última en el array)
                         const topCard = data.faceDownPile.cards[data.faceDownPile.cards.length - 1];
-                        this.flipCard(topCard.element, position);
                         
                         console.log(`🤖 AUTO: Volteando carta en posición ${position}`);
                         this.showMessage(`🤖 Volteando carta en posición ${position}`);
+                        
+                        // Usar la función existente de volteo
+                        this.flipLocalCardInPlace(topCard.element, topCard.data, position);
+                        
                         return true;
                     }
                 }
                 return false;
             }
 
-            // Verificar si se puede voltear carta en una posición
-            canFlipCardInPosition(position) {
-                // Aplicar las mismas reglas del juego manual
-                const currentPosition = this.currentTurn?.expectedPosition;
-                return !currentPosition || position === currentPosition || 
-                       this.positions[position].faceUpPile.cards.length === 0;
-            }
+
 
             // Finalizar modo automático
             finishAutoMode() {

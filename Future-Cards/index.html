@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Cards - Juego de Cartas Narrativo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- FASE 1: Pantalla Inicial (Home) -->
+    <div id="home-screen" class="screen active">
+        <div class="home-background">
+            <!-- Área principal del juego (tablero visual) -->
+            <div class="home-main-area">
+                <h1 class="game-title">Future Cards</h1>
+                <p class="game-subtitle">Juego de Cartas Narrativo con Lógica de Destino</p>
+            </div>
+            <!-- Botones centrados en la parte inferior -->
+            <div class="menu-buttons">
+                <button id="play-btn" class="menu-button">
+                    <img src="img/PlayBtm.png" alt="Play">
+                </button>
+                <button id="settings-btn" class="menu-button">
+                    <img src="img/Settings Btm.png" alt="Settings">
+                </button>
+                <button id="exit-btn" class="menu-button">
+                    <img src="img/Exit.png" alt="Exit">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Selección de Modo -->
+    <div id="mode-selection" class="modal hidden">
+        <div class="modal-content">
+            <h2>Selecciona el Modo de Juego</h2>
+            <div class="mode-buttons">
+                <button id="manual-mode" class="mode-button">
+                    <span>🎮</span>
+                    <p>Manual</p>
+                    <small>Arrastra las cartas tú mismo</small>
+                </button>
+                <button id="auto-mode" class="mode-button">
+                    <span>🤖</span>
+                    <p>Automático</p>
+                    <small>Mira cómo se resuelve solo</small>
+                </button>
+            </div>
+            <div class="shuffle-options">
+                <h3>Tipo de Barajado</h3>
+                <label>
+                    <input type="radio" name="shuffle" value="perfect" checked>
+                    Barajado Perfecto (Riffle Shuffle)
+                </label>
+                <label>
+                    <input type="radio" name="shuffle" value="imperfect">
+                    Barajado Imperfecto (Mezcla Aleatoria)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FASE 2: Pantalla del Juego -->
+    <div id="game-screen" class="screen">
+        <div class="game-background">
+            <div class="game-ui">
+                <button id="home-btn" class="ui-button">
+                    <img src="img/Home.png" alt="Home">
+                </button>
+                <div class="game-info">
+                    <span id="mode-indicator">Modo: Manual</span>
+                    <span id="cards-remaining">Cartas restantes: 52</span>
+                </div>
+            </div>
+            
+            <!-- Disposición del Tablero -->
+            <div class="board-container">
+                <!-- Fila Superior -->
+                <div class="card-position top-row" data-position="A" data-label="A">
+                    <div class="position-label">A</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position top-row" data-position="2" data-label="2">
+                    <div class="position-label">2</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position top-row" data-position="3" data-label="3">
+                    <div class="position-label">3</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position top-row" data-position="4" data-label="4">
+                    <div class="position-label">4</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+
+                <!-- Fila Media -->
+                <div class="card-position middle-row left" data-position="Q" data-label="Q">
+                    <div class="position-label">Q</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position middle-row center" data-position="K" data-label="K">
+                    <div class="position-label">K</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position middle-row right" data-position="5" data-label="5">
+                    <div class="position-label">5</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+
+                <div class="card-position middle-row left" data-position="J" data-label="J">
+                    <div class="position-label">J</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position middle-row right" data-position="6" data-label="6">
+                    <div class="position-label">6</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+
+                <!-- Fila Inferior -->
+                <div class="card-position bottom-row" data-position="10" data-label="10">
+                    <div class="position-label">10</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position bottom-row" data-position="9" data-label="9">
+                    <div class="position-label">9</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position bottom-row" data-position="8" data-label="8">
+                    <div class="position-label">8</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+                <div class="card-position bottom-row" data-position="7" data-label="7">
+                    <div class="position-label">7</div>
+                    <div class="face-down-stack"></div>
+                    <div class="face-up-stack"></div>
+                </div>
+            </div>
+
+            <!-- Controles del Juego -->
+            <div class="game-controls">
+                <button id="start-game" class="control-button">Iniciar Juego</button>
+                <button id="auto-play" class="control-button" disabled>Modo Automático</button>
+                <button id="reset-game" class="control-button">Reiniciar</button>
+            </div>
+            
+            <!-- Overlay de animación de barajado -->
+            <div id="shuffle-animation" class="shuffle-overlay hidden">
+                <div class="shuffle-content">
+                    <h2>Barajando cartas...</h2>
+                    <div class="shuffle-cards">
+                        <div class="flying-card card-1"></div>
+                        <div class="flying-card card-2"></div>
+                        <div class="flying-card card-3"></div>
+                        <div class="flying-card card-4"></div>
+                        <div class="flying-card card-5"></div>
+                    </div>
+                    <div class="shuffle-progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FASE 4: Pantalla de Resultado -->
+    <div id="result-screen" class="screen">
+        <div class="result-background">
+            <div class="result-content">
+                <h1 id="result-title">Resultado</h1>
+                <div id="result-answer" class="result-answer">SÍ</div>
+                <div id="result-description" class="result-description">
+                    ¡El destino ha hablado! Todas las cartas encontraron su lugar.
+                </div>
+                <div class="result-buttons">
+                    <button id="play-again" class="result-button">Jugar de Nuevo</button>
+                    <button id="return-home" class="result-button">Volver al Inicio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

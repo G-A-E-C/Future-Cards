@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Cards - Debug</title>
+    <style>
+        /* CSS simplificado para debug */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background-color: #1a1a2e;
+            color: #eee;
+        }
+        
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        .home-background {
+            width: 100%;
+            height: 100%;
+            background-image: url('img/Home.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Debug border */
+            border: 5px solid red;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            /* Debug background */
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .menu-button {
+            background: transparent;
+            border: 2px solid white;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-button:hover {
+            transform: scale(1.1);
+            border-color: gold;
+        }
+        
+        .menu-button img {
+            width: 150px;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- FASE 1: Pantalla Inicial (Home) -->
+    <div id="home-screen" class="screen active">
+        <div class="home-background">
+            <div class="menu-buttons">
+                <button id="play-btn" class="menu-button">
+                    <img src="img/PlayBtm.png" alt="Play">
+                </button>
+                <button id="settings-btn" class="menu-button">
+                    <img src="img/Settings Btm.png" alt="Settings">
+                </button>
+                <button id="exit-btn" class="menu-button">
+                    <img src="img/Exit.png" alt="Exit">
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        console.log('Debug: Página cargada');
+        
+        // Debug: verificar que las imágenes se cargan
+        document.querySelectorAll('img').forEach((img, index) => {
+            img.onload = () => console.log(`Debug: Imagen ${index + 1} cargada: ${img.src}`);
+            img.onerror = () => console.error(`Debug: Error cargando imagen ${index + 1}: ${img.src}`);
+        });
+        
+        // Debug: verificar el background
+        const homeBackground = document.querySelector('.home-background');
+        console.log('Debug: Background style:', window.getComputedStyle(homeBackground).backgroundImage);
+    </script>
+</body>
+</html>

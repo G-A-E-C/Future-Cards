@@ -1,114 +1,328 @@
+/*
+ * =====================================================
+ * 🃏 FUTURE CARDS - JUEGO DE CARTAS INTERACTIVO
+ * =====================================================
+ * 
+ * DESCRIPCIÓN:
+ * Juego de cartas estratégico donde el objetivo es organizar
+ * todas las cartas de una baraja estándar (52 cartas) en sus
+ * posiciones correctas siguiendo reglas específicas de turnos.
+ * 
+ * MECÁNICAS PRINCIPALES:
+ * - Sistema de turnos secuencial (inicia en posición K)
+ * - Distribución: 4 cartas por posición (A-K), todas boca abajo
+ * - Colocación: Las cartas solo pueden ir a su posición correcta
+ * - Victoria: Todas las cartas organizadas en sus posiciones
+ * 
+ * AUTOR: Gabriel Alejandro Espinoza Coronel (G-A-E-C)
+ * FECHA: Julio 2025
+ * VERSIÓN: 2.0
+ * REPOSITORIO: https://github.com/G-A-E-C/Future-Cards
+ * 
+ * =====================================================
+ */
+
+/**
+ * =====================================================
+ * 🎮 CLASE PRINCIPAL: FutureCardsGame
+ * =====================================================
+ * 
+ * Esta es la clase principal que maneja toda la lógica del juego.
+ * Controla el estado del juego, la distribución de cartas, los turnos,
+ * la interfaz de usuario, el modo automático y las validaciones.
+ * 
+ * FUNCIONALIDADES PRINCIPALES:
+ * ✅ Gestión completa del estado del juego
+ * ✅ Sistema de turnos secuencial
+ * ✅ Validación de movimientos
+ * ✅ Modo automático con IA
+ * ✅ Interfaz drag & drop
+ * ✅ Animaciones y efectos visuales
+ * ✅ Sistema de mensajes y feedback
+ * =====================================================
+ */
 class FutureCardsGame {
+    
+    /**
+     * =====================================================
+     * 🔧 CONSTRUCTOR - Inicialización del Juego
+     * =====================================================
+     * 
+     * Inicializa todas las variables de estado del juego y configura
+     * la estructura básica necesaria para el funcionamiento.
+     * 
+     * VARIABLES DE ESTADO:
+     * - deck: Array con las 52 cartas de la baraja
+     * - positions: Objeto con las 13 posiciones (A-K)
+     * - gameInProgress: Boolean que indica si hay juego activo
+     * - currentPosition: Posición actual del turno
+     * - turnState: Estado detallado del turno actual
+     * 
+     * FLUJO DE INICIALIZACIÓN:
+     * 1. Configurar variables de estado
+     * 2. Inicializar estructuras de datos
+     * 3. Configurar event listeners
+     * =====================================================
+     */
     constructor() {
-        this.deck = [];
-        this.positions = {};
-        this.gameInProgress = false;
-        this.currentPosition = 'K';
-        this.currentMode = 'manual'; // 'manual' o 'auto'
-        this.shuffleType = 'perfect';
-        this.draggedCard = null;
-        this.isDealing = false; // 🛡️ Protección contra múltiples llamadas de dealCards
+        // 📦 ESTRUCTURAS DE DATOS PRINCIPALES
+        this.deck = [];                     // Array con todas las cartas de la baraja
+        this.positions = {};                // Objeto con las 13 posiciones del tablero (A-K)
         
-        // 🎮 CONTROL DE TURNOS
+        // 🎮 ESTADO DEL JUEGO
+        this.gameInProgress = false;        // Indica si hay un juego activo
+        this.currentPosition = 'K';         // Posición actual del turno (siempre inicia en K)
+        this.currentMode = 'manual';        // Modo de juego: 'manual' o 'auto'
+        this.shuffleType = 'perfect';       // Tipo de barajado: 'perfect' o 'imperfect'
+        
+        // 🖱️ CONTROL DE INTERFAZ
+        this.draggedCard = null;            // Carta que se está arrastrando actualmente
+        this.isDealing = false;             // Protección contra múltiples llamadas de distribución
+        
+        // � SISTEMA DE TURNOS DETALLADO
         this.turnState = {
-            canFlipCard: true,          // ¿Se puede voltear una carta?
-            flippedThisTurn: false,     // ¿Ya se volteó una carta este turno?
-            lastFlippedFrom: null,      // ¿De qué posición se volteó la última carta?
-            waitingForAction: false     // ¿Esperando que el jugador mueva la carta?
+            canFlipCard: true,              // ¿Se puede voltear una carta en este turno?
+            flippedThisTurn: false,         // ¿Ya se volteó una carta este turno?
+            lastFlippedFrom: null,          // ¿De qué posición se volteó la última carta?
+            waitingForAction: false         // ¿Esperando que el jugador mueva la carta?
         };
         
-        this.initializeGame();
-        this.setupEventListeners();
+        // 🚀 INICIALIZACIÓN AUTOMÁTICA
+        this.initializeGame();              // Configurar estructuras básicas del juego
+        this.setupEventListeners();        // Configurar eventos de la interfaz
     }
 
-    /* =====================================================
-       INICIALIZACIÓN DEL JUEGO
-    ===================================================== */
+    /**
+     * =====================================================
+     * 🏗️ INICIALIZACIÓN DEL JUEGO
+     * =====================================================
+     * 
+     * Método principal que coordina la inicialización de todas
+     * las estructuras de datos necesarias para el juego.
+     * 
+     * PROCESOS DE INICIALIZACIÓN:
+     * 1. Crear la baraja completa de 52 cartas
+     * 2. Inicializar las 13 posiciones del tablero
+     * 3. Configurar estado inicial del juego
+     * 
+     * NOTA: Este método se ejecuta automáticamente en el constructor
+     * y cada vez que se reinicia el juego.
+     * =====================================================
+     */
     initializeGame() {
         console.log('=== INICIALIZANDO JUEGO ===');
-        this.createDeck();
-        this.initializePositions();
+        this.createDeck();              // Crear baraja de 52 cartas
+        this.initializePositions();     // Configurar posiciones A-K
         console.log('=== INICIALIZACIÓN COMPLETA ===');
     }
 
+    /**
+     * =====================================================
+     * 🃏 CREACIÓN DE LA BARAJA
+     * =====================================================
+     * 
+     * Genera una baraja estándar de 52 cartas con todos los
+     * palos y valores. Cada carta tiene propiedades únicas.
+     * 
+     * ESTRUCTURA DE CARTA:
+     * {
+     *   suit: 'C'|'D'|'H'|'S',    // Palo (Clubs, Diamonds, Hearts, Spades)
+     *   value: 'A'-'K',            // Valor (A, 2-10, J, Q, K)
+     *   revealed: boolean,         // ¿Está boca arriba?
+     *   id: string                 // ID único (ej: "K-S")
+     * }
+     * 
+     * VALIDACIÓN:
+     * - Verifica que se generen exactamente 52 cartas
+     * - Confirma que todas las cartas sean únicas
+    /**
+     * =====================================================
+     * 🃏 CREACIÓN DE LA BARAJA
+     * =====================================================
+     * 
+     * Genera una baraja estándar de 52 cartas con todos los
+     * palos y valores. Cada carta tiene propiedades únicas.
+     * 
+     * ESTRUCTURA DE CARTA:
+     * {
+     *   suit: 'C'|'D'|'H'|'S',    // Palo (Clubs, Diamonds, Hearts, Spades)
+     *   value: 'A'-'K',            // Valor (A, 2-10, J, Q, K)
+     *   revealed: boolean,         // ¿Está boca arriba?
+     *   id: string                 // ID único (ej: "K-S")
+     * }
+     * 
+     * VALIDACIÓN:
+     * - Verifica que se generen exactamente 52 cartas
+     * - Confirma que todas las cartas sean únicas
+     * =====================================================
+     */
     createDeck() {
-        console.log('Creando deck...');
-        const suits = ['C', 'D', 'H', 'S']; // Clubs, Diamonds, Hearts, Spades
+        console.log('🃏 Creando deck completo...');
+        
+        // 📋 DEFINICIÓN DE PALOS Y VALORES
+        const suits = ['C', 'D', 'H', 'S'];     // Clubs, Diamonds, Hearts, Spades
         const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         
+        // 🔄 GENERACIÓN DE CARTAS
         this.deck = [];
         suits.forEach(suit => {
             values.forEach(value => {
                 this.deck.push({
-                    suit: suit,
-                    value: value,
-                    revealed: false,
-                    id: `${value}-${suit}` // ID único para cada carta
+                    suit: suit,                 // Palo de la carta
+                    value: value,               // Valor de la carta
+                    revealed: false,            // Inicialmente todas boca abajo
+                    id: `${value}-${suit}`      // ID único para identificación
                 });
             });
         });
         
-        console.log('Deck creado con', this.deck.length, 'cartas');
-        console.log('Verificación - debe ser exactamente 52 cartas');
+        console.log('✅ Deck creado con', this.deck.length, 'cartas');
         
-        // Verificar que hay exactamente 52 cartas únicas
+        // 🔍 VALIDACIÓN DE INTEGRIDAD
         const uniqueCards = new Set(this.deck.map(card => card.id));
-        console.log('Cartas únicas:', uniqueCards.size);
+        console.log('🔍 Verificación - Cartas únicas:', uniqueCards.size);
         
         if (this.deck.length !== 52 || uniqueCards.size !== 52) {
-            console.error('ERROR: Número incorrecto de cartas en el deck!');
+            console.error('❌ ERROR: Número incorrecto de cartas en el deck!');
+        } else {
+            console.log('✅ Deck validado correctamente');
         }
     }
 
+    /**
+     * =====================================================
+     * 🏗️ INICIALIZACIÓN DE POSICIONES
+     * =====================================================
+     * 
+     * Configura las 13 posiciones del tablero (A-K) donde
+     * se colocarán las cartas durante el juego.
+     * 
+     * ESTRUCTURA DE POSICIÓN:
+     * {
+     *   faceDown: [],    // Array de cartas boca abajo
+     *   faceUp: []       // Array de cartas boca arriba
+     * }
+     * 
+     * ORDEN DE POSICIONES:
+     * A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K
+     * 
+     * NOTA: Cada posición puede contener hasta 4 cartas del mismo valor.
+     * =====================================================
+     */
     initializePositions() {
-        console.log('Inicializando posiciones...');
+        console.log('🏗️ Inicializando posiciones del tablero...');
+        
+        // 📋 DEFINICIÓN DE POSICIONES
         const positionNames = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         this.positions = {};
         
+        // 🔄 CREACIÓN DE ESTRUCTURAS DE POSICIÓN
         positionNames.forEach(pos => {
             this.positions[pos] = {
-                faceDown: [],
-                faceUp: []
+                faceDown: [],               // Cartas boca abajo en esta posición
+                faceUp: []                  // Cartas boca arriba en esta posición
             };
         });
-        console.log('Posiciones inicializadas:', this.positions);
-    }
-
-    shuffleDeck(type = 'perfect') {
-        console.log('Barajando deck con tipo:', type);
-        if (type === 'perfect') {
-            this.riffleShuffle();
-        } else {
-            this.imperfectShuffle();
-        }
-        console.log('Deck barajado. Primeras 5 cartas:', this.deck.slice(0, 5));
-    }
-
-    riffleShuffle() {
-        // Simulación de riffle shuffle (barajado perfecto)
-        const mid = Math.floor(this.deck.length / 2);
-        const left = this.deck.slice(0, mid);
-        const right = this.deck.slice(mid);
         
+        console.log('✅ Posiciones inicializadas:', Object.keys(this.positions).length, 'posiciones');
+        console.log('📍 Posiciones creadas:', Object.keys(this.positions));
+    }
+
+    /**
+     * =====================================================
+     * 🔀 SISTEMA DE BARAJADO
+     * =====================================================
+     * 
+     * Baraja las cartas usando diferentes algoritmos según
+     * el tipo especificado. Esto añade aleatoriedad al juego.
+     * 
+     * TIPOS DE BARAJADO:
+     * - 'perfect': Riffle shuffle (barajado perfecto)
+     * - 'imperfect': Fisher-Yates shuffle (barajado aleatorio)
+     * 
+     * @param {string} type - Tipo de barajado a usar
+     * =====================================================
+     */
+    shuffleDeck(type = 'perfect') {
+        console.log('🔀 Barajando deck con tipo:', type);
+        
+        // 🎯 SELECCIÓN DE ALGORITMO DE BARAJADO
+        if (type === 'perfect') {
+            this.riffleShuffle();           // Barajado riffle (más realista)
+        } else {
+            this.imperfectShuffle();        // Barajado Fisher-Yates (completamente aleatorio)
+        }
+        
+        console.log('✅ Deck barajado. Primeras 5 cartas:', this.deck.slice(0, 5));
+    }
+
+    /**
+     * =====================================================
+     * 🎴 RIFFLE SHUFFLE (Barajado Perfecto)
+     * =====================================================
+     * 
+     * Simula el barajado tipo "riffle" usado en casinos.
+     * Divide la baraja en dos mitades y las intercala
+     * de manera semi-aleatoria.
+     * 
+     * PROCESO:
+     * 1. Dividir baraja en dos mitades
+     * 2. Intercalar cartas alternativamente
+     * 3. Agregar variación aleatoria ligera
+     * 
+     * VENTAJA: Más realista que shuffle completamente aleatorio
+     * =====================================================
+     */
+    riffleShuffle() {
+        console.log('🎴 Ejecutando Riffle Shuffle...');
+        
+        // 📏 DIVISIÓN EN MITADES
+        const mid = Math.floor(this.deck.length / 2);
+        const left = this.deck.slice(0, mid);       // Primera mitad
+        const right = this.deck.slice(mid);         // Segunda mitad
+        
+        // 🔄 INTERCALADO DE CARTAS
         this.deck = [];
         let leftIndex = 0, rightIndex = 0;
         
         while (leftIndex < left.length || rightIndex < right.length) {
-            // Alternar entre las dos mitades con ligera variación
+            // 🎲 ALTERNAR CON VARIACIÓN ALEATORIA
             if (leftIndex < left.length && (rightIndex >= right.length || Math.random() > 0.5)) {
                 this.deck.push(left[leftIndex++]);
             } else if (rightIndex < right.length) {
                 this.deck.push(right[rightIndex++]);
             }
         }
+        
+        console.log('✅ Riffle Shuffle completado');
     }
 
+    /**
+     * =====================================================
+     * 🎲 FISHER-YATES SHUFFLE (Barajado Aleatorio)
+     * =====================================================
+     * 
+     * Implementa el algoritmo Fisher-Yates para un barajado
+     * completamente aleatorio y uniformemente distribuido.
+     * 
+     * PROCESO:
+     * 1. Iterar desde la última carta hacia la primera
+     * 2. Para cada posición, elegir una carta aleatoria
+     * 3. Intercambiar las cartas de posición
+     * 
+     * VENTAJA: Distribución perfectamente uniforme
+     * =====================================================
+     */
     imperfectShuffle() {
-        // Fisher-Yates shuffle (mezcla completamente aleatoria)
+        console.log('🎲 Ejecutando Fisher-Yates Shuffle...');
+        
+        // 🔄 ALGORITMO FISHER-YATES
         for (let i = this.deck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+            const j = Math.floor(Math.random() * (i + 1));     // Índice aleatorio
+            [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];   // Intercambio
         }
+        
+        console.log('✅ Fisher-Yates Shuffle completado');
     }
 
     dealCards() {
